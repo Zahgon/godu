@@ -8,14 +8,10 @@ import (
 	"os"
 	"path/filepath"
 	"sync"
-	"time"
 
 	"github.com/gdamore/tcell/v2"
-	"github.com/gosuri/uilive"
 	"github.com/viktomas/godu/commands"
 	"github.com/viktomas/godu/files"
-
-	"github.com/viktomas/godu/interactive"
 )
 
 // the correct version is injected by `go build` command in release.sh script
@@ -26,10 +22,10 @@ func main() {
 	nullTerminate := flag.Bool("print0", false, "print null-terminated strings")
 	version := flag.Bool("v", false, "show version")
 	flag.Usage = func() {
-        fmt.Fprintf(os.Stderr, "Usage: godu [OPTION]... [DIRECTORY]\nShow disk usage under DIRECTORY (. by default) interactively.\n\nOptions:\n")
-        flag.PrintDefaults()
-        fmt.Fprintf(os.Stderr, "\nThe currently selected file/folder can be marked/unmarked with the space key. Upon exiting, godu prints all marked files/folders to stdout. You can further process them with commands like xargs.\n\nFor example:\n\n# Show information of selected files\ngodu -print0 | xargs -0 ls -l\n\n# Delete selected files\ngodu -print0 | xargs -0 rm -rf\n\n# Move selected files to 'tmp' directory\ngodu -print0 | xargs -0 -I _ mv _ tmp\n")
-    }
+		fmt.Fprintf(os.Stderr, "Usage: godu [OPTION]... [DIRECTORY]\nShow disk usage under DIRECTORY (. by default) interactively.\n\nOptions:\n")
+		flag.PrintDefaults()
+		fmt.Fprintf(os.Stderr, "\nThe currently selected file/folder can be marked/unmarked with the space key. Upon exiting, godu prints all marked files/folders to stdout. You can further process them with commands like xargs.\n\nFor example:\n\n# Show information of selected files\ngodu -print0 | xargs -0 ls -l\n\n# Delete selected files\ngodu -print0 | xargs -0 rm -rf\n\n# Move selected files to 'tmp' directory\ngodu -print0 | xargs -0 -I _ mv _ tmp\n")
+	}
 	flag.Parse()
 	if *version {
 		fmt.Printf("godu %s\n", goduVersion)
@@ -67,55 +63,11 @@ func main() {
 	printMarkedFiles(lastState, *nullTerminate)
 }
 
-func reportProgress(progress <-chan int) {
-	const interval = 50 * time.Millisecond
-	writer := uilive.New()
-	writer.Out = os.Stderr
-	writer.Start()
-	defer writer.Stop()
-	total := 0
-	ticker := time.NewTicker(interval)
-	for {
-		select {
-		case c, ok := <-progress:
-			if !ok {
-				return
-			}
-			total += c
-		case <-ticker.C:
-			fmt.Fprintf(writer, "Walked through %d folders\n", total)
-		}
-	}
-}
+func reportProgress(progress <-chan int) { _ = "STUB: not implemented"; return }
 
 func printMarkedFiles(lastState *commands.State, nullTerminate bool) {
-	markedFiles := interactive.FilesAsSlice(lastState.MarkedFiles)
-	var printFunc func(string)
-	if nullTerminate {
-		printFunc = func(s string) {
-			fmt.Printf("%s\x00", s)
-		}
-	} else {
-		printFunc = func(s string) {
-			fmt.Println(s)
-		}
-	}
-	for _, f := range markedFiles {
-		printFunc(f)
-	}
+	_ = "STUB: not implemented"
+	return
 }
 
-func initScreen() tcell.Screen {
-	tcell.SetEncodingFallback(tcell.EncodingFallbackASCII)
-	s, e := tcell.NewScreen()
-	if e != nil {
-		log.Printf("%v\n", e)
-		os.Exit(1)
-	}
-	if e = s.Init(); e != nil {
-		log.Printf("%v\n", e)
-		os.Exit(1)
-	}
-	s.Clear()
-	return s
-}
+func initScreen() tcell.Screen { _ = "STUB: not implemented"; return *new(tcell.Screen) }
